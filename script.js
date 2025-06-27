@@ -21,7 +21,7 @@ const cronometro = document.getElementById("cronometro");
 const filtroCheckbox = document.getElementById("filtroEspecial");
 const alarme = new Audio("campainha.mp3");
 
-const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 19, 0, 0));
+const inicioRotacao = new Date(Date.UTC((2025, 5, 27, 9, 0, 0));
 
 function checarEventoRotativo() {
   const agora = new Date();
