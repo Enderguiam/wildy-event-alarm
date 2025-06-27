@@ -19,21 +19,31 @@ const exibir = document.getElementById("evento");
 const alarme = new Audio("campainha.mp3");
 
 function checarEvento() {
-  const agora = new Date();
-  const horaAtual = agora.getUTCHours();
-  const minutoAtual = agora.getUTCMinutes();
+  const agora = new Date(); // agora em UTC automático
+  const agoraUTC = Date.UTC(
+    agora.getUTCFullYear(),
+    agora.getUTCMonth(),
+    agora.getUTCDate(),
+    agora.getUTCHours(),
+    agora.getUTCMinutes(),
+    0, 0
+  );
 
   for (let i = 0; i < eventos.length; i++) {
     const [h, m] = eventos[i].hora.split(":").map(Number);
-    let eventoHora = new Date();
-    eventoHora.setUTCHours(h);
-    eventoHora.setUTCMinutes(m);
-    eventoHora.setUTCSeconds(0);
-    eventoHora.setUTCMilliseconds(0);
+    let eventoUTC = Date.UTC(
+      agora.getUTCFullYear(),
+      agora.getUTCMonth(),
+      agora.getUTCDate(),
+      h, m, 0, 0
+    );
 
-    let diff = (eventoHora - agora) / 60000; // diferença em minutos
+    // Se o evento já passou hoje, considera ele amanhã
+    if (eventoUTC < agoraUTC) {
+      eventoUTC += 86400000; // adiciona 24h em ms
+    }
 
-    if (diff < -55) diff += 1440; // se passou do dia, ajusta para o próximo
+    let diff = (eventoUTC - agoraUTC) / 60000; // diferença em minutos
 
     if (diff > 0 && diff <= 5) {
       const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
