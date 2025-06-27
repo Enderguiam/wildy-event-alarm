@@ -1,4 +1,3 @@
-
 const eventos = [
   { nome: "Spider Swarm", especial: false },
   { nome: "Unnatural Outcrop", especial: false },
