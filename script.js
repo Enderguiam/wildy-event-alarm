@@ -26,23 +26,29 @@ const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 9, 0, 0));
 function checarEventoRotativo() {
   const agora = new Date();
   const diffHoras = Math.floor((agora - inicioRotacao) / 3600000);
-  const horaUTC = agora.getUTCHours();
   const mostrarSoEspeciais = filtroCheckbox.checked;
 
   for (let i = 1; i <= eventos.length; i++) {
     const index = (diffHoras + i) % eventos.length;
     const evento = eventos[index];
-    const eventoHorario = (horaUTC + i) % 24;
+    const eventoHorario = (inicioRotacao.getUTCHours() + diffHoras + i) % 24;
 
     if (!mostrarSoEspeciais || evento.especial) {
       const textoEvento = `${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(eventoHorario).padStart(2, '0')}:00`;
 
-      const proximaHora = new Date();
-      proximaHora.setUTCMinutes(0, 0, 0);
-      proximaHora.setUTCHours(eventoHorario);
+      const proximaHora = new Date(Date.UTC(
+        agora.getUTCFullYear(),
+        agora.getUTCMonth(),
+        agora.getUTCDate(),
+        eventoHorario,
+        0,
+        0
+      ));
+
+      // Se o horário for anterior ao atual, pula pro dia seguinte
       if (proximaHora <= agora) {
-  proximaHora.setUTCDate(proximaHora.getUTCDate() + 1);
-}
+        proximaHora.setUTCDate(proximaHora.getUTCDate() + 1);
+      }
 
       const diffMs = proximaHora - agora;
       const totalSegundos = Math.floor(diffMs / 1000);
@@ -50,7 +56,7 @@ function checarEventoRotativo() {
       const minutos = Math.floor((totalSegundos % 3600) / 60);
       const segundos = totalSegundos % 60;
 
-      let tempoFormatado = horas > 0
+      const tempoFormatado = horas > 0
         ? `${horas}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`
         : `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
 
@@ -62,6 +68,7 @@ function checarEventoRotativo() {
       } else {
         exibir.innerText = `Próximo evento: ${textoEvento}`;
       }
+
       return;
     }
   }
@@ -69,6 +76,7 @@ function checarEventoRotativo() {
   exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
   cronometro.innerText = `⏳ Em: --:--`;
 }
+
 
 setInterval(checarEventoRotativo, 1000);
 checarEventoRotativo();
