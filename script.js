@@ -20,8 +20,8 @@ const exibir = document.getElementById("prox-evento");
 
 function checarEvento() {
   const agora = new Date();
-  const horaAtual = agora.getHours();
-  const minutoAtual = agora.getMinutes();
+  const horaAtual = agora.getUTCHours();
+  const minutoAtual = agora.getUTCMinutes();
 
   for (let i = 0; i < eventos.length; i++) {
     const [h, m] = eventos[i].hora.split(":").map(Number);
