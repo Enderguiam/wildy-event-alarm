@@ -19,50 +19,53 @@ const exibir = document.getElementById("evento");
 const alarme = new Audio("campainha.mp3");
 
 function checarEvento() {
-  const agora = new Date(); // agora em UTC automático
-  const agoraUTC = Date.UTC(
-    agora.getUTCFullYear(),
-    agora.getUTCMonth(),
-    agora.getUTCDate(),
-    agora.getUTCHours(),
-    agora.getUTCMinutes(),
-    0, 0
-  );
-
-  for (let i = 0; i < eventos.length; i++) {
-    const [h, m] = eventos[i].hora.split(":").map(Number);
-    let eventoUTC = Date.UTC(
+  try {
+    const agora = new Date();
+    const agoraUTC = Date.UTC(
       agora.getUTCFullYear(),
       agora.getUTCMonth(),
       agora.getUTCDate(),
-      h, m, 0, 0
+      agora.getUTCHours(),
+      agora.getUTCMinutes(),
+      0, 0
     );
 
-    // Se o evento já passou hoje, considera ele amanhã
-    if (eventoUTC < agoraUTC) {
-      eventoUTC += 86400000; // adiciona 24h em ms
-    }
+    for (let i = 0; i < eventos.length; i++) {
+      const [h, m] = eventos[i].hora.split(":").map(Number);
+      let eventoUTC = Date.UTC(
+        agora.getUTCFullYear(),
+        agora.getUTCMonth(),
+        agora.getUTCDate(),
+        h, m, 0, 0
+      );
 
-    let diff = (eventoUTC - agoraUTC) / 60000; // diferença em minutos
-
-    if (diff > 0 && diff <= 5) {
-      const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
-      exibir.innerText = `⚠️ Alarme: ${nomeEvento} às ${eventos[i].hora}`;
-      if (alarme.paused) {
-        alarme.play();
+      if (eventoUTC < agoraUTC) {
+        eventoUTC += 86400000; // +24h
       }
-      return;
+
+      let diff = (eventoUTC - agoraUTC) / 60000; // minutos
+
+      if (diff > 0 && diff <= 5) {
+        const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
+        exibir.innerText = `⚠️ Alarme: ${nomeEvento} às ${eventos[i].hora}`;
+        if (alarme.paused) alarme.play();
+        return;
+      }
+
+      if (diff > 5) {
+        const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
+        exibir.innerText = `Próximo evento: ${nomeEvento} às ${eventos[i].hora}`;
+        return;
+      }
     }
 
-    if (diff > 5) {
-      const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
-      exibir.innerText = `Próximo evento: ${nomeEvento} às ${eventos[i].hora}`;
-      return;
-    }
+    exibir.innerText = "Nenhum evento encontrado.";
+  } catch (erro) {
+    exibir.innerText = "Erro ao calcular evento.";
+    console.error(erro);
   }
-
-  exibir.innerText = "Nenhum evento encontrado.";
 }
 
+// Atualiza a cada 10 segundos
 setInterval(checarEvento, 10000);
 checarEvento();
