@@ -1,0 +1,8 @@
+
+{
+  "name": "Wildy Event Alarm",
+  "description": "Toque um alarme 5 minutos antes dos eventos da Wilderness",
+  "main": "index.html",
+  "icon": "https://cdn-icons-png.flaticon.com/512/1041/1041916.png",
+  "type": "app"
+}
