@@ -24,21 +24,21 @@ const alarme = new Audio("campainha.mp3");
 // Spider Swarm às 09:00 UTC em 27/jun/2025
 const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 9, 0, 0));
 
-function checarEventoRotativo() {
+function checareventosRotativo() {
   const agora = new Date();
   const diffHoras = Math.floor((agora - inicioRotacao) / 3600000);
-@@ -12,7 +38,6 @@ function checarEventoRotativo() {
-    if (!mostrarSoEspeciais || evento.especial) {
-      const textoEvento = `${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(eventoHorario).padStart(2, '0')}:00`;
+@@ -12,7 +38,6 @@ function checareventosRotativo() {
+    if (!mostrarSoEspeciais || eventos.especial) {
+      const textoeventos = `${eventos.nome}${eventos.especial ? " (Special)" : ""} às ${String(eventosHorario).padStart(2, '0')}:00`;
 
-      // Calcular hora do evento
+      // Calcular hora do eventos
       const proximaHora = new Date();
-      proximaHora.setUTCHours(eventoHorario, 0, 0, 0);
+      proximaHora.setUTCHours(eventosHorario, 0, 0, 0);
       if (proximaHora < agora) {
-@@ -37,3 +62,6 @@ function checarEventoRotativo() {
-  exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
+@@ -37,3 +62,6 @@ function checareventosRotativo() {
+  exibir.innerText = `⏭️ Aguardando próximo eventos especial...`;
   cronometro.innerText = `⏳ Em: --:--`;
 }
 
-setInterval(checarEventoRotativo, 1000);
-checarEventoRotativo();
+setInterval(checareventosRotativo, 1000);
+checareventosRotativo();
