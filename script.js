@@ -40,9 +40,9 @@ function checarEventoRotativo() {
       const proximaHora = new Date();
       proximaHora.setUTCMinutes(0, 0, 0);
       proximaHora.setUTCHours(eventoHorario);
-      if (proximaHora < agora) {
-        proximaHora.setUTCHours(eventoHorario + 1);
-      }
+      if (proximaHora <= agora) {
+  proximaHora.setUTCDate(proximaHora.getUTCDate() + 1);
+}
 
       const diffMs = proximaHora - agora;
       const totalSegundos = Math.floor(diffMs / 1000);
