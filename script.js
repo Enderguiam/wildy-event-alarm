@@ -1,3 +1,4 @@
+
 const eventos = [
   { nome: "Spider Swarm", especial: false },
   { nome: "Unnatural Outcrop", especial: false },
@@ -25,7 +26,6 @@ const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 9, 0, 0)); // Spider Swarm 
 function checarEventoRotativo() {
   const agora = new Date();
   const diffHoras = Math.floor((agora - inicioRotacao) / 3600000);
-
   const horaUTC = agora.getUTCHours();
   const minutoUTC = agora.getUTCMinutes();
   const segundoUTC = agora.getUTCSeconds();
@@ -48,7 +48,7 @@ function checarEventoRotativo() {
 
       if (ehAlarme) {
         exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
-        if (!alarme.paused && (!mostrarSoEspeciais || evento.especial)) {
+        if ((!mostrarSoEspeciais || evento.especial) && alarme.paused) {
           alarme.play();
         }
       } else {
@@ -58,8 +58,8 @@ function checarEventoRotativo() {
     }
   }
 
-  // Se nenhum evento especial for encontrado nas próximas 14h
   exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
 }
+
 setInterval(checarEventoRotativo, 1000);
 checarEventoRotativo();
