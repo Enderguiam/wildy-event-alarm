@@ -1,3 +1,4 @@
+
 const eventos = [
   { nome: "Spider Swarm", hora: "23:00" },
   { nome: "Unnatural Outcrop", hora: "00:00" },
@@ -66,6 +67,5 @@ function checarEvento() {
   }
 }
 
-// Atualiza a cada 10 segundos
 setInterval(checarEvento, 10000);
 checarEvento();
