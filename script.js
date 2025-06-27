@@ -20,6 +20,7 @@ const exibir = document.getElementById("evento");
 const cronometro = document.getElementById("cronometro");
 const filtroCheckbox = document.getElementById("filtroEspecial");
 const alarme = new Audio("campainha.mp3");
+const btnPararAlarme = document.getElementById("pararAlarme");
 
 const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 9, 0, 0));
 
@@ -27,6 +28,11 @@ function checarEventoRotativo() {
   const agora = new Date();
   const diffHoras = Math.floor((agora - inicioRotacao) / 3600000);
   const mostrarSoEspeciais = filtroCheckbox.checked;
+  btnPararAlarme.addEventListener("click", () => {
+  alarme.pause();
+  alarme.currentTime = 0;
+  btnPararAlarme.style.display = "none";
+});
 
  for (let i = 1; i <= eventos.length; i++) {
   const index = (diffHoras + i) % eventos.length;
@@ -59,12 +65,13 @@ function checarEventoRotativo() {
     cronometro.innerText = `⏳ Em: ${tempoFormatado}`;
 
     if (minutos < 5 && horas === 0) {
-      exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
-      if (alarme.paused) alarme.play();
-    } else {
-      exibir.innerText = `Próximo evento: ${textoEvento}`;
-    }
-
+  exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
+  if (alarme.paused) alarme.play();
+  btnPararAlarme.style.display = "inline-block";
+} else {
+  exibir.innerText = `Próximo evento: ${textoEvento}`;
+  btnPararAlarme.style.display = "none";
+}
     return;
   }
 }
