@@ -1,4 +1,5 @@
 const eventos = [
+  { nome: "Spider Swarm", hora: "23:00" },
   { nome: "Unnatural Outcrop", hora: "00:00" },
   { nome: "Stryke the Wyrm", hora: "01:00", especial: true },
   { nome: "Demon Stragglers", hora: "02:00" },
@@ -11,12 +12,11 @@ const eventos = [
   { nome: "Lost Souls", hora: "09:00" },
   { nome: "Ramokee Incursion", hora: "20:00" },
   { nome: "Displaced Energy", hora: "21:00" },
-  { nome: "Evil Bloodwood Tree", hora: "22:00", especial: true },
-  { nome: "Spider Swarm", hora: "23:00" }
+  { nome: "Evil Bloodwood Tree", hora: "22:00", especial: true }
 ];
 
-const alarme = document.getElementById("alarme");
-const exibir = document.getElementById("prox-evento");
+const exibir = document.getElementById("evento");
+const alarme = new Audio("campainha.mp3");
 
 function checarEvento() {
   const agora = new Date();
@@ -26,27 +26,33 @@ function checarEvento() {
   for (let i = 0; i < eventos.length; i++) {
     const [h, m] = eventos[i].hora.split(":").map(Number);
     let eventoHora = new Date();
-    eventoHora.setHours(h);
-    eventoHora.setMinutes(m);
-    eventoHora.setSeconds(0);
+    eventoHora.setUTCHours(h);
+    eventoHora.setUTCMinutes(m);
+    eventoHora.setUTCSeconds(0);
+    eventoHora.setUTCMilliseconds(0);
 
-    let diff = (eventoHora - agora) / 60000; // minutos até o evento
+    let diff = (eventoHora - agora) / 60000; // diferença em minutos
 
-    if (diff < -55) diff += 1440; // ajusta para eventos do próximo dia
+    if (diff < -55) diff += 1440; // se passou do dia, ajusta para o próximo
 
     if (diff > 0 && diff <= 5) {
       const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
       exibir.innerText = `⚠️ Alarme: ${nomeEvento} às ${eventos[i].hora}`;
-      if (!alarme.played.length || alarme.currentTime === 0) {
+      if (alarme.paused) {
         alarme.play();
       }
-      break;
-    } else if (diff > 5) {
+      return;
+    }
+
+    if (diff > 5) {
       const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
       exibir.innerText = `Próximo evento: ${nomeEvento} às ${eventos[i].hora}`;
-      break;
+      return;
     }
   }
+
+  exibir.innerText = "Nenhum evento encontrado.";
 }
 
 setInterval(checarEvento, 10000);
+checarEvento();
