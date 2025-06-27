@@ -16,8 +16,14 @@ h1 {
   font-size: 2em;
 }
 
-h2 {
+h2, p {
   margin-top: 20px;
   font-size: 1.5em;
   color: #ccc;
+}
+
+label {
+  display: block;
+  margin: 15px auto;
+  font-size: 1em;
 }

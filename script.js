@@ -1,71 +1,61 @@
 
 const eventos = [
-  { nome: "Spider Swarm", hora: "23:00" },
-  { nome: "Unnatural Outcrop", hora: "00:00" },
-  { nome: "Stryke the Wyrm", hora: "01:00", especial: true },
-  { nome: "Demon Stragglers", hora: "02:00" },
-  { nome: "Butterfly Swarm", hora: "03:00" },
-  { nome: "King Black Dragon Rampage", hora: "04:00", especial: true },
-  { nome: "Forgotten Soldiers", hora: "05:00" },
-  { nome: "Surprising Seedlings", hora: "06:00" },
-  { nome: "Hellhound Pack", hora: "07:00" },
-  { nome: "Infernal Star", hora: "08:00", especial: true },
-  { nome: "Lost Souls", hora: "09:00" },
-  { nome: "Ramokee Incursion", hora: "20:00" },
-  { nome: "Displaced Energy", hora: "21:00" },
-  { nome: "Evil Bloodwood Tree", hora: "22:00", especial: true }
+  { nome: "Spider Swarm", especial: false },
+  { nome: "Unnatural Outcrop", especial: false },
+  { nome: "Stryke the Wyrm", especial: true },
+  { nome: "Demon Stragglers", especial: false },
+  { nome: "Butterfly Swarm", especial: false },
+  { nome: "King Black Dragon Rampage", especial: true },
+  { nome: "Forgotten Soldiers", especial: false },
+  { nome: "Surprising Seedlings", especial: false },
+  { nome: "Hellhound Pack", especial: false },
+  { nome: "Infernal Star", especial: true },
+  { nome: "Lost Souls", especial: false },
+  { nome: "Ramokee Incursion", especial: false },
+  { nome: "Displaced Energy", especial: false },
+  { nome: "Evil Bloodwood Tree", especial: true }
 ];
 
 const exibir = document.getElementById("evento");
+const cronometro = document.getElementById("cronometro");
+const filtroCheckbox = document.getElementById("filtroEspecial");
 const alarme = new Audio("campainha.mp3");
 
-function checarEvento() {
-  try {
-    const agora = new Date();
-    const agoraUTC = Date.UTC(
-      agora.getUTCFullYear(),
-      agora.getUTCMonth(),
-      agora.getUTCDate(),
-      agora.getUTCHours(),
-      agora.getUTCMinutes(),
-      0, 0
-    );
+const inicioRotacao = new Date(Date.UTC(2024, 0, 1, 0, 0, 0));
 
-    for (let i = 0; i < eventos.length; i++) {
-      const [h, m] = eventos[i].hora.split(":").map(Number);
-      let eventoUTC = Date.UTC(
-        agora.getUTCFullYear(),
-        agora.getUTCMonth(),
-        agora.getUTCDate(),
-        h, m, 0, 0
-      );
+function checarEventoRotativo() {
+  const agora = new Date();
+  const diffHoras = Math.floor((agora - inicioRotacao) / 3600000);
+  const eventoAtualIndex = diffHoras % eventos.length;
+  const eventoProximoIndex = (eventoAtualIndex + 1) % eventos.length;
 
-      if (eventoUTC < agoraUTC) {
-        eventoUTC += 86400000; // +24h
+  const evento = eventos[eventoProximoIndex];
+  const mostrarEvento = !filtroCheckbox.checked || evento.especial;
+
+  const horaUTC = agora.getUTCHours();
+  const minutoUTC = agora.getUTCMinutes();
+  const segundoUTC = agora.getUTCSeconds();
+
+  const horaProximo = (horaUTC + 1) % 24;
+  const tempoRestanteMin = 59 - minutoUTC;
+  const tempoRestanteSeg = 59 - segundoUTC;
+  const tempoTexto = `${tempoRestanteMin.toString().padStart(2, '0')}:${tempoRestanteSeg.toString().padStart(2, '0')}`;
+
+  cronometro.innerText = `⏳ Em: ${tempoTexto}`;
+
+  if (mostrarEvento) {
+    if (tempoRestanteMin < 5) {
+      exibir.innerText = `⚠️ Alarme: ${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(horaProximo).padStart(2, '0')}:00`;
+      if ((!filtroCheckbox.checked || evento.especial) && alarme.paused) {
+        alarme.play();
       }
-
-      let diff = (eventoUTC - agoraUTC) / 60000; // minutos
-
-      if (diff > 0 && diff <= 5) {
-        const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
-        exibir.innerText = `⚠️ Alarme: ${nomeEvento} às ${eventos[i].hora}`;
-        if (alarme.paused) alarme.play();
-        return;
-      }
-
-      if (diff > 5) {
-        const nomeEvento = eventos[i].nome + (eventos[i].especial ? " (Special)" : "");
-        exibir.innerText = `Próximo evento: ${nomeEvento} às ${eventos[i].hora}`;
-        return;
-      }
+    } else {
+      exibir.innerText = `Próximo evento: ${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(horaProximo).padStart(2, '0')}:00`;
     }
-
-    exibir.innerText = "Nenhum evento encontrado.";
-  } catch (erro) {
-    exibir.innerText = "Erro ao calcular evento.";
-    console.error(erro);
+  } else {
+    exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
   }
 }
 
-setInterval(checarEvento, 10000);
-checarEvento();
+setInterval(checarEventoRotativo, 1000);
+checarEventoRotativo();
