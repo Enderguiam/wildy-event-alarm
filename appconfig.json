@@ -1,7 +1,14 @@
 {
-  "name": "Wildy Event Alarm",
+  "appName": "Wildy Event Alarm",
   "description": "Toca um alarme 5 minutos antes dos eventos da Wilderness",
-  "main": "https://enderguiam.github.io/wildy-event-alarm/index.html",
-  "icon": "https://cdn-icons-png.flaticon.com/512/1041/1041916.png",
-  "type": "app"
+  "appUrl": "./index.html",
+  "configUrl": "./appconfig.json",
+  "iconUrl": "./icon.png",
+  "defaultWidth": 350,
+  "defaultHeight": 220,
+  "minWidth": 300,
+  "minHeight": 150,
+  "requestHandlers": [],
+  "activators": [],
+  "permissions": "overlay,pixel,gamestate"
 }
