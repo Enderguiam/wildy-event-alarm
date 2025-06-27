@@ -30,11 +30,6 @@ function checarEventoRotativo() {
   const minutoUTC = agora.getUTCMinutes();
   const segundoUTC = agora.getUTCSeconds();
 
-  const tempoRestanteMin = 59 - minutoUTC;
-  const tempoRestanteSeg = 59 - segundoUTC;
-  const tempoTexto = `${tempoRestanteMin.toString().padStart(2, '0')}:${tempoRestanteSeg.toString().padStart(2, '0')}`;
-  cronometro.innerText = `⏳ Em: ${tempoTexto}`;
-
   const mostrarSoEspeciais = filtroCheckbox.checked;
 
   for (let i = 1; i <= eventos.length; i++) {
@@ -43,14 +38,25 @@ function checarEventoRotativo() {
     const eventoHorario = (horaUTC + i) % 24;
 
     if (!mostrarSoEspeciais || evento.especial) {
-      const ehAlarme = i === 1 && tempoRestanteMin < 5;
       const textoEvento = `${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(eventoHorario).padStart(2, '0')}:00`;
 
-      if (ehAlarme) {
+      // Cronômetro para o horário exato do próximo evento exibido
+      const proximaTroca = new Date();
+      proximaTroca.setUTCHours(eventoHorario, 0, 0, 0);
+      if (proximaTroca < agora) {
+        proximaTroca.setUTCHours(eventoHorario + 1, 0, 0, 0);
+      }
+
+      const diffMs = proximaTroca - agora;
+      const minutos = Math.floor(diffMs / 60000);
+      const segundos = Math.floor((diffMs % 60000) / 1000);
+      const tempoTexto = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+      cronometro.innerText = `⏳ Em: ${tempoTexto}`;
+
+      // Alarme se estiver dentro de 5 min do próximo evento
+      if (minutos < 5) {
         exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
-        if ((!mostrarSoEspeciais || evento.especial) && alarme.paused) {
-          alarme.play();
-        }
+        if (alarme.paused) alarme.play();
       } else {
         exibir.innerText = `Próximo evento: ${textoEvento}`;
       }
@@ -59,6 +65,7 @@ function checarEventoRotativo() {
   }
 
   exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
+  cronometro.innerText = `⏳ Em: --:--`;
 }
 
 setInterval(checarEventoRotativo, 1000);
