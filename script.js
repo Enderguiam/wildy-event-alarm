@@ -44,10 +44,16 @@ function checarEventoRotativo() {
         proximaHora.setUTCHours(eventoHorario + 1, 0, 0, 0);
       }
 
-      const diffMs = proximaHora - agora;
-      const minutos = Math.floor(diffMs / 60000);
-      const segundos = Math.floor((diffMs % 60000) / 1000);
-      cronometro.innerText = `⏳ Em: ${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+    const totalSegundos = Math.floor(diffMs / 1000);
+  const horas = Math.floor(totalSegundos / 3600);
+  const minutos = Math.floor((totalSegundos % 3600) / 60);
+  const segundos = totalSegundos % 60;
+
+  let tempoFormatado = horas > 0
+  ? `${horas}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`
+  : `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+
+  cronometro.innerText = `⏳ Em: ${tempoFormatado}`;
 
       if (minutos < 5) {
         exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
