@@ -1,7 +1,7 @@
 
 const eventos = [
   { nome: "Spider Swarm", especial: false },
-  { nome: "Unnatural Outcrop", especial: false },Add commentMore actions
+  { nome: "Unnatural Outcrop", especial: false },
   { nome: "Stryke the Wyrm", especial: true },
   { nome: "Demon Stragglers", especial: false },
   { nome: "Butterfly Swarm", especial: false },
@@ -16,7 +16,7 @@ const eventos = [
   { nome: "Evil Bloodwood Tree", especial: true }
 ];
 
-const exibir = document.getElementById("evento");
+const exibir = document.getElementById("eventos");
 const cronometro = document.getElementById("cronometro");
 const filtroCheckbox = document.getElementById("filtroEspecial");
 const alarme = new Audio("campainha.mp3");
