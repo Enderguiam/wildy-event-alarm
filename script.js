@@ -1,4 +1,3 @@
-
 const eventos = [
   { nome: "Spider Swarm", especial: false },
   { nome: "Unnatural Outcrop", especial: false },
@@ -21,41 +20,46 @@ const cronometro = document.getElementById("cronometro");
 const filtroCheckbox = document.getElementById("filtroEspecial");
 const alarme = new Audio("campainha.mp3");
 
-const inicioRotacao = new Date(Date.UTC((2025, 5, 27, 9, 0, 0));
+const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 9, 0, 0)); // Spider Swarm às 09:00 UTC em 27/jun/2025
 
 function checarEventoRotativo() {
   const agora = new Date();
   const diffHoras = Math.floor((agora - inicioRotacao) / 3600000);
-  const eventoAtualIndex = diffHoras % eventos.length;
-  const eventoProximoIndex = (eventoAtualIndex + 1) % eventos.length;
-
-  const evento = eventos[eventoProximoIndex];
-  const mostrarEvento = !filtroCheckbox.checked || evento.especial;
 
   const horaUTC = agora.getUTCHours();
   const minutoUTC = agora.getUTCMinutes();
   const segundoUTC = agora.getUTCSeconds();
 
-  const horaProximo = (horaUTC + 1) % 24;
   const tempoRestanteMin = 59 - minutoUTC;
   const tempoRestanteSeg = 59 - segundoUTC;
   const tempoTexto = `${tempoRestanteMin.toString().padStart(2, '0')}:${tempoRestanteSeg.toString().padStart(2, '0')}`;
-
   cronometro.innerText = `⏳ Em: ${tempoTexto}`;
 
-  if (mostrarEvento) {
-    if (tempoRestanteMin < 5) {
-      exibir.innerText = `⚠️ Alarme: ${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(horaProximo).padStart(2, '0')}:00`;
-      if ((!filtroCheckbox.checked || evento.especial) && alarme.paused) {
-        alarme.play();
-      }
-    } else {
-      exibir.innerText = `Próximo evento: ${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(horaProximo).padStart(2, '0')}:00`;
-    }
-  } else {
-    exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
-  }
-}
+  const mostrarSoEspeciais = filtroCheckbox.checked;
 
+  for (let i = 1; i <= eventos.length; i++) {
+    const index = (diffHoras + i) % eventos.length;
+    const evento = eventos[index];
+    const eventoHorario = (horaUTC + i) % 24;
+
+    if (!mostrarSoEspeciais || evento.especial) {
+      const ehAlarme = i === 1 && tempoRestanteMin < 5;
+      const textoEvento = `${evento.nome}${evento.especial ? " (Special)" : ""} às ${String(eventoHorario).padStart(2, '0')}:00`;
+
+      if (ehAlarme) {
+        exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
+        if (!alarme.paused && (!mostrarSoEspeciais || evento.especial)) {
+          alarme.play();
+        }
+      } else {
+        exibir.innerText = `Próximo evento: ${textoEvento}`;
+      }
+      return;
+    }
+  }
+
+  // Se nenhum evento especial for encontrado nas próximas 14h
+  exibir.innerText = `⏭️ Aguardando próximo evento especial...`;
+}
 setInterval(checarEventoRotativo, 1000);
 checarEventoRotativo();
