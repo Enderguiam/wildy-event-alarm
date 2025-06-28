@@ -19,7 +19,15 @@ const exibir = document.getElementById("evento");
 const cronometro = document.getElementById("cronometro");
 const filtroCheckbox = document.getElementById("filtroEspecial");
 const btnToggleAlarme = document.getElementById("toggleAlarme");
+const tempoAvisoInput = document.getElementById("tempoAviso");
 const alarme = new Audio("campainha.mp3");
+alarme.volume = 0.5; // Volume de 0.0 (mudo) até 1.0 (máximo)
+const volumeSlider = document.getElementById("volumeSlider");
+alarme.volume = parseFloat(volumeSlider.value); // valor inicial
+
+volumeSlider.addEventListener("input", () => {
+  alarme.volume = parseFloat(volumeSlider.value);
+});
 
 let alarmeAtivado = true;
 
@@ -71,7 +79,9 @@ function checarEventoRotativo() {
 
       cronometro.innerText = `⏳ Em: ${tempoFormatado}`;
 
-      if (minutos < 5 && horas === 0) {
+      const tempoAvisoSegundos = parseInt(tempoAvisoInput.value, 10) || 300;
+
+      if (totalSegundos <= tempoAvisoSegundos) {
         exibir.innerText = `⚠️ Alarme: ${textoEvento}`;
         if (alarmeAtivado && alarme.paused) alarme.play();
       } else {
@@ -88,3 +98,37 @@ function checarEventoRotativo() {
 
 setInterval(checarEventoRotativo, 1000);
 checarEventoRotativo();
+
+// Carregar configurações salvas ao abrir
+window.addEventListener("DOMContentLoaded", () => {
+  const filtroEspecialSalvo = localStorage.getItem("filtroEspecial");
+  const tempoAvisoSalvo = localStorage.getItem("tempoAviso");
+  const volumeSalvo = localStorage.getItem("volumeSlider");
+
+  if (filtroEspecialSalvo !== null) {
+    document.getElementById("filtroEspecial").checked = filtroEspecialSalvo === "true";
+  }
+
+  if (tempoAvisoSalvo !== null) {
+    document.getElementById("tempoAviso").value = tempoAvisoSalvo;
+  }
+
+  if (volumeSalvo !== null) {
+    const slider = document.getElementById("volumeSlider");
+    slider.value = volumeSalvo;
+    alarme.volume = parseFloat(volumeSalvo);
+  }
+});
+
+// Salvar ao mudar as opções
+document.getElementById("filtroEspecial").addEventListener("change", e => {
+  localStorage.setItem("filtroEspecial", e.target.checked);
+});
+
+document.getElementById("tempoAviso").addEventListener("input", e => {
+  localStorage.setItem("tempoAviso", e.target.value);
+});
+
+document.getElementById("volumeSlider").addEventListener("input", e => {
+  localStorage.setItem("volumeSlider", e.target.value);
+});

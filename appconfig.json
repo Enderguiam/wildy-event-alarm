@@ -3,7 +3,7 @@
   "description": "Toca um alarme 5 minutos antes dos eventos da Wilderness",
   "appUrl": "./index.html",
   "configUrl": "./appconfig.json",
-  "iconUrl": "./icon.png",
+  "icon": "icon.png",
   "defaultWidth": 350,
   "defaultHeight": 220,
   "minWidth": 300,

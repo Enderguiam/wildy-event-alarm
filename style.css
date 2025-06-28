@@ -1,14 +1,15 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 90%;
+  height: 100%;
+  width: 100%;
   background-color: #1a1a1a;
   font-family: sans-serif;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: clamp(10px);
+  font-size: clamp(12px, 2vw, 16px);
 }
 
 .container {
@@ -19,62 +20,160 @@ html, body {
   width: 90%;
   height: 90%;
   max-width: 100vh;
+  max-height: 100vh;
   box-sizing: border-box;
   text-align: center;
-  max-height: 100vh;
   overflow: hidden;
-  
 }
 
 /* Estilo para o h1 */
 h1 {
-  font-size: 5vh;
-  margin: 0.5em 0;
-  margin-bottom: -5px;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  margin: 0.5em 0 -5px 0;
 }
 
 /* Estilo para o h2 e p */
 h2, p {
-  font-size: 5vh;
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
   margin: 0.5em 0;
 }
 
 /* Checkbox e label */
 label {
-  font-size: 5vh;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   display: block;
   margin: 1em 0;
-  font-size: 0.9em;
 }
 
 /* Botão */
 button {
-  font-size: 4.5vh;
-  padding: 0.5em 1em;
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
+  padding: 0.4em 0.1em;
   border: none;
-  background-color: turquoise;
-  color: black;
+  background-color: #1f1f1f;
+  color: white;
+  box-shadow: 0 0 8px #00ffff66;
   border-radius: 60px;
   cursor: pointer;
-  margin-top: 5vh;
-  align: center;
-}
-
-.label-texto {
-  font-size: 3vh;
-  color: rgb(255, 255, 255);
-  padding-left: 0.5em;
-  margin-top: 50px;
+  display: block;
+  width: 35%;
+ 
+  text-align: center;
  
 }
-br{ 
-  border: #8f1e1e,5px;
-  color: rgb(255, 255, 255);
-  padding-left: 0.1em;
-  margin: 1em 0;
-  text-align: center;
+
+/* Texto dentro do label */
+.label-texto {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: white;
+  padding-left: 0.5em;
 
 }
+
+/* Estilo para br */
+br {
+  display: block;
+
+  border: 5vh;
+}
+
+/* hr opcional */
 hr {
+  border: 4px solid rgb(255, 255, 255);
+  border-top: 1px solid #444;
+
+}
+ .Bottom{
+  display:flex;
+   justify-content: center;
+  align-items: center;
+ } 
+
+ .timer {
+  justify-content: center;
+  width: 100px;
+  padding: 0.5em;
+  border: none;
+  border-radius: 10px;
+  background-color: #1f1f1f;
+  color: white;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  text-align: center;
+  box-shadow: 0 0 8px #00ffff66;
+  outline: none;
+  transition: 0.2s ease-in-out;
+  
+ }
+ 
+ .tempo-config {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  color: white;
+}
+
+/* Linha horizontal com input */
+.tempo-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Input de número pequeno e centralizado */
+#tempoAviso {
+  width: 60px; /* ← Aqui está o controle do tamanho */
+  padding: 0.3em;
+  border: none;
+  border-radius: 8px;
+  background-color: #1f1f1f;
+  color: white;
+  text-align: center;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  box-shadow: 0 0 5px #00ffff66;
+  outline: none;
+}
+
+/* Remove setas (Chrome, Edge) */
+#tempoAviso::-webkit-inner-spin-button,
+#tempoAviso::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Remove setas (Firefox) */
+#tempoAviso {
+  -moz-appearance: textfield;
+}
+.volume-control {
+  margin: 0.5em auto;
+  text-align: center;
+  color: white;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+   display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#volumeSlider {
+  width: 100px;
+  margin-left: 0.5em;
+  accent-color: turquoise;
+  background-color: #1f1f1f;
+  color: white;
+  box-shadow: 0 0 5px #00ffff66;
+}
+
+.volume_bottom{
+  
+  border-radius: 60px;
+  padding: 0.4em,1em;
+  accent-color: turquoise;
+  background-color: #1f1f1f;
+  color: white;
+  box-shadow: 0 0 5px #00ffff66;
+  width: 35%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
 
 }
