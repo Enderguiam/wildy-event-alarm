@@ -21,18 +21,26 @@ const filtroCheckbox = document.getElementById("filtroEspecial");
 const btnToggleAlarme = document.getElementById("toggleAlarme");
 const tempoAvisoInput = document.getElementById("tempoAviso");
 const alarme = new Audio("campainha.mp3");
-alarme.volume = 0.5; // Volume de 0.0 (mudo) até 1.0 (máximo)
 const volumeSlider = document.getElementById("volumeSlider");
-alarme.volume = parseFloat(volumeSlider.value); // valor inicial
+alarme.volume = parseFloat(volumeSlider.value);
+
+// Atualiza o visual do gradiente do slider
+function updateSliderBackground(value) {
+  const percent = (parseFloat(value) * 100) + "%";
+  volumeSlider.style.background = `linear-gradient(to right, #00f2b6 ${percent}, #ffffff ${percent})`;
+}
 
 volumeSlider.addEventListener("input", () => {
   alarme.volume = parseFloat(volumeSlider.value);
+  localStorage.setItem("volumeSlider", volumeSlider.value);
+  updateSliderBackground(volumeSlider.value);
 });
 
 let alarmeAtivado = true;
 
 btnToggleAlarme.addEventListener("click", () => {
   alarmeAtivado = !alarmeAtivado;
+  localStorage.setItem("alarmeAtivado", alarmeAtivado); // ← salvar estado
   btnToggleAlarme.innerText = alarmeAtivado ? "🔔 Alarme: Ativado" : "🔕 Alarme: Desativado";
   if (!alarmeAtivado) {
     alarme.pause();
@@ -40,7 +48,6 @@ btnToggleAlarme.addEventListener("click", () => {
   }
 });
 
-// Data e hora do início da rotação
 const inicioRotacao = new Date(Date.UTC(2025, 5, 27, 9, 0, 0));
 
 function checarEventoRotativo() {
@@ -99,36 +106,40 @@ function checarEventoRotativo() {
 setInterval(checarEventoRotativo, 1000);
 checarEventoRotativo();
 
-// Carregar configurações salvas ao abrir
+// Salvar configurações quando forem alteradas
+filtroCheckbox.addEventListener("change", e => {
+  localStorage.setItem("filtroEspecial", e.target.checked);
+});
+
+tempoAvisoInput.addEventListener("input", e => {
+  localStorage.setItem("tempoAviso", e.target.value);
+});
+
+// Restaurar configurações ao carregar
 window.addEventListener("DOMContentLoaded", () => {
   const filtroEspecialSalvo = localStorage.getItem("filtroEspecial");
   const tempoAvisoSalvo = localStorage.getItem("tempoAviso");
   const volumeSalvo = localStorage.getItem("volumeSlider");
+  const alarmeAtivadoSalvo = localStorage.getItem("alarmeAtivado");
 
   if (filtroEspecialSalvo !== null) {
-    document.getElementById("filtroEspecial").checked = filtroEspecialSalvo === "true";
+    filtroCheckbox.checked = filtroEspecialSalvo === "true";
   }
 
   if (tempoAvisoSalvo !== null) {
-    document.getElementById("tempoAviso").value = tempoAvisoSalvo;
+    tempoAvisoInput.value = tempoAvisoSalvo;
   }
 
   if (volumeSalvo !== null) {
-    const slider = document.getElementById("volumeSlider");
-    slider.value = volumeSalvo;
+    volumeSlider.value = volumeSalvo;
     alarme.volume = parseFloat(volumeSalvo);
+    updateSliderBackground(volumeSalvo);
+  } else {
+    updateSliderBackground(volumeSlider.value); // fallback visual
   }
-});
 
-// Salvar ao mudar as opções
-document.getElementById("filtroEspecial").addEventListener("change", e => {
-  localStorage.setItem("filtroEspecial", e.target.checked);
-});
-
-document.getElementById("tempoAviso").addEventListener("input", e => {
-  localStorage.setItem("tempoAviso", e.target.value);
-});
-
-document.getElementById("volumeSlider").addEventListener("input", e => {
-  localStorage.setItem("volumeSlider", e.target.value);
+  if (alarmeAtivadoSalvo !== null) {
+    alarmeAtivado = alarmeAtivadoSalvo === "true";
+    btnToggleAlarme.innerText = alarmeAtivado ? "🔔 Alarme: Ativado" : "🔕 Alarme: Desativado";
+  }
 });
